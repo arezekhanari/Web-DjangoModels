@@ -83,3 +83,57 @@ class Enrollment(models.Model):  # define the fields for the enrollment model
     # this function returns first and last name of student that enrolled a specific course
     def __str__(self):
         return f'{self.student} - ({self.course})'
+
+
+# Assignment Model
+class Assignment(models.Model):
+    # Title of the assignment
+    title = models.CharField(max_length=100)
+
+    # Description of the assignment
+    description = models.TextField()
+
+    # Due date for the assignment
+    due_date = models.DateTimeField()
+
+    # Maximum score achievable for the assignment
+    max_score = models.PositiveIntegerField()
+
+    # Course to which the assignment is associated
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, related_name="assignments")
+
+
+# Classroom Model
+class Classroom(models.Model):
+    # Name or identifier for the classroom
+    name = models.CharField(max_length=50)
+
+    # Maximum seating capacity of the classroom
+    seating_capacity = models.PositiveIntegerField()
+
+    # Building or location where the classroom is situated
+    location = models.CharField(max_length=100)
+
+    # Description of the classroom (optional)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+# ClassroomUsage Model
+class ClassroomUsage(models.Model):
+    # The course for which the classroom is scheduled
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, related_name="classroom_usages")
+
+    # The classroom scheduled for the course
+    classroom = models.ForeignKey(
+        Classroom, on_delete=models.CASCADE, related_name="classroom_usages")
+
+    # Date and time when the classroom will be used for the course
+    scheduled_datetime = models.DateTimeField()
+
+    def __str__(self):
+        return f'{self.course} in {self.classroom} at {self.scheduled_datetime}'
